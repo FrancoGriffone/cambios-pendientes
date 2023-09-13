@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ColDef, DomLayoutType } from 'ag-grid-community';
+import { ColDef, DomLayoutType, GridApi, GridReadyEvent } from 'ag-grid-community';
 import * as dayjs from 'dayjs';
 import { MessageService } from 'primeng/api';
 import { forkJoin } from 'rxjs';
@@ -56,6 +56,9 @@ export class CambiosRealizadosComponent {
         filter: true,
       }
     }
+
+  private gridApi!: GridApi //EVENTO GRID API
+  
   //FIN AG GRID VARIABLES 
 
   //<------------------------------------------------------------------------------------------------------------------>
@@ -96,7 +99,7 @@ export class CambiosRealizadosComponent {
         this.filas = 100
       }
   
-      let data = {
+      let datos = {
         'tiendaId': this.tiendaSelec.id,
         'moduloId': this.moduloSelec.id,
         'productoId': this.idProd,
@@ -104,9 +107,27 @@ export class CambiosRealizadosComponent {
         'hasta': dayjs(this.hasta).format('YYYY-MM-DD'),
         'filas': this.filas
       }
-      this.api.obtenerListaRealizados(data).subscribe((data)=>{
+
+      this.api.obtenerListaRealizados(datos).subscribe((data)=>{
         this.rowData = data
       })
+    }
+  }
+
+  //EVENTO ONGRID, CUANDO SE CARGA LA GRID TRAE LOS DATOS
+  onGridReady(params: GridReadyEvent){
+    this.gridApi = params.api
+  }
+
+  //BOTON PARA EXPORTAR LA LISTA INVISIBLE A UN EXCEL
+  onBtExport() {
+    if (this.rowData == undefined){
+      this.messageService.add({ 
+        severity: 'warn', 
+        summary: 'Error', 
+        detail: 'La lista no tiene datos. Cargue primero los datos para poder imprimirlos.' });
+    } else {
+      this.gridApi.exportDataAsExcel();
     }
   }
 

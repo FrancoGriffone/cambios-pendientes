@@ -59,7 +59,7 @@
                 label="Imprimir" 
                 icon="pi pi-print" 
                 styleClass="p-button-raised p-button-text p-button-danger" 
-                (onClick)="onSubmit()"></p-button>
+                (onClick)="onBtExport()"></p-button>
             </div>
             <div>
                 <p-button 
@@ -79,6 +79,7 @@
         [gridOptions]="gridOptions"
         [pagination]=true
         [paginationPageSize]="25"
+        (gridReady)="onGridReady($event)"
         ></ag-grid-angular>
     </div>
 </div>
