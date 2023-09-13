@@ -44,7 +44,7 @@
                 label="Actualizar seleccionados" 
                 icon="pi pi-cloud-upload" 
                 styleClass="p-button-raised p-button-text p-button-secondary"  
-                (onClick)="irCambios()"></p-button>
+                (onClick)="actualizar('bottom')"></p-button>
             </div>
             <div>
                 <p-button 
@@ -54,6 +54,11 @@
                 (onClick)="irCambios()"></p-button>
             </div>
         </div>
+        <p-confirmDialog 
+        [style]="{ width: '50vw' }" 
+        key="positionDialog" 
+        [position]="position" 
+        rejectButtonStyleClass="p-button-outlined"></p-confirmDialog>
         <ag-grid-angular
         class="ag-theme-alpine mt-3"
         id="myGrid"
@@ -63,7 +68,10 @@
         [domLayout]="domLayout"
         [gridOptions]="gridOptions"
         [pagination]=true
+        [rowSelection]="'multiple'"
+        [rowMultiSelectWithClick]="true"
         [paginationPageSize]="25"
+        (gridReady)="onGridReady($event)"
         ></ag-grid-angular>
     </div>
 </div>

@@ -41,4 +41,10 @@ export class ApiService {
     const url = this.POST_CAMBIOS_REALIZADOS;
     return this.http.post(url, data)
   }
+
+  //OBTENER LISTA PENDIENTES
+  procesarCambios(data: Object){
+    const url = this.PUT_PROCESAR_CAMBIOS;
+    return this.http.put(url, data)
+  }
 }

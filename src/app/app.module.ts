@@ -10,6 +10,8 @@ import { CalendarModule } from 'primeng/calendar';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+
 
 //AG GRID
 import { AgGridModule } from 'ag-grid-angular';
@@ -46,7 +48,8 @@ import { HttpClientModule } from '@angular/common/http';
     InputTextModule,
     CalendarModule,
     ToastModule,
-    TooltipModule
+    TooltipModule,
+    ConfirmDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]
