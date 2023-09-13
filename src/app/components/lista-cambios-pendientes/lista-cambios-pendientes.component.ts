@@ -144,9 +144,14 @@ export class ListaCambiosPendientesComponent {
              }
              this.api.procesarCambios(enviarProd).subscribe((data)=>{
                this.cambios = this.cambios + 1
+               console.log(data)
+               seleccionadas.shift()
+               if (seleccionadas.length == 0){
+                this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: `¡Se actualizaron los datos! Guardaste ${this.cambios} cambios.` });
+                this.cambios = 0
+              }
              })
             });
-            this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: `¡Se actualizaron los datos! Guardaste ${this.cambios} cambios.` });
         },
         reject: (type: ConfirmEventType) => {
             switch (type) {
@@ -162,27 +167,6 @@ export class ListaCambiosPendientesComponent {
     });
   }
 }
-
-  // actualizar(){
-  //   let seleccionadas = this.gridApi.getSelectedRows()
-  //   if (seleccionadas.length == 0){
-  //     this.messageService.add({ 
-  //       severity: 'error', 
-  //       summary: 'Error', 
-  //       detail: 'No seleccionaste ningún producto' });
-  //   } else {
-  //     seleccionadas.forEach((e: any) => {
-  //       let enviarProd = {
-  //         'tiendaId': this.tiendaSelec.id,
-  //         'moduloId': this.moduloSelec.id,
-  //         'productoId': e.productoId
-  //       }
-  //       this.api.procesarCambios(enviarProd).subscribe((data)=>{
-  //         this.cambios = this.cambios + 1
-  //       })
-  //     });
-  //   }
-  // }
   
   irCambios(){
     this.router.navigate(['cambiosrealizados'])
