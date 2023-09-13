@@ -2,13 +2,15 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ColDef, DomLayoutType } from 'ag-grid-community';
 import * as dayjs from 'dayjs';
+import { MessageService } from 'primeng/api';
 import { forkJoin } from 'rxjs';
 import { ApiService } from 'src/app/service/api.service';
 
 @Component({
   selector: 'app-cambios-realizados',
   templateUrl: './cambios-realizados.component.html',
-  styleUrls: ['./cambios-realizados.component.scss']
+  styleUrls: ['./cambios-realizados.component.scss'],
+  providers: [MessageService]
 })
 export class CambiosRealizadosComponent {
 
@@ -59,7 +61,8 @@ export class CambiosRealizadosComponent {
   //<------------------------------------------------------------------------------------------------------------------>
   
   constructor(private api: ApiService,
-    private router: Router){}
+    private router: Router,
+    private messageService: MessageService){}
 
   ngOnInit() {
     //APIS
@@ -74,25 +77,37 @@ export class CambiosRealizadosComponent {
   }
 
   onSubmit(){
-    if(this.idProd == undefined) {
-      this.idProd = null
+    if (this.tiendaSelec == undefined){
+      this.messageService.add({ 
+        severity: 'error', 
+        summary: 'Error', 
+        detail: 'No seleccionaste ninguna tienda' });
+    } else if (this.moduloSelec == undefined) {
+      this.messageService.add({ 
+        severity: 'error', 
+        summary: 'Error', 
+        detail: 'No seleccionaste ningun módulo' });
+    } else {
+      if(this.idProd == undefined) {
+        this.idProd = null
+      }
+  
+      if(this.filas == undefined){
+        this.filas = 100
+      }
+  
+      let data = {
+        'tiendaId': this.tiendaSelec.id,
+        'moduloId': this.moduloSelec.id,
+        'productoId': this.idProd,
+        'desde': dayjs(this.desde).format('YYYY-MM-DD'),
+        'hasta': dayjs(this.hasta).format('YYYY-MM-DD'),
+        'filas': this.filas
+      }
+      this.api.obtenerListaRealizados(data).subscribe((data)=>{
+        this.rowData = data
+      })
     }
-
-    if(this.filas == undefined){
-      this.filas = 100
-    }
-
-    let data = {
-      'tiendaId': this.tiendaSelec.id,
-      'moduloId': this.moduloSelec.id,
-      'productoId': this.idProd,
-      'desde': dayjs(this.desde).format('YYYY-MM-DD'),
-      'hasta': dayjs(this.hasta).format('YYYY-MM-DD'),
-      'filas': this.filas
-    }
-    this.api.obtenerListaRealizados(data).subscribe((data)=>{
-      this.rowData = data
-    })
   }
 
   irPendientes(){

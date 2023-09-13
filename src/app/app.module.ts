@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 //PRIMEng
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { DropdownModule } from 'primeng/dropdown';
@@ -8,8 +9,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
-
-
+import { TooltipModule } from 'primeng/tooltip';
 
 //AG GRID
 import { AgGridModule } from 'ag-grid-angular';
@@ -45,7 +45,8 @@ import { HttpClientModule } from '@angular/common/http';
     DropdownModule,
     InputTextModule,
     CalendarModule,
-    ToastModule
+    ToastModule,
+    TooltipModule
   ],
   providers: [],
   bootstrap: [AppComponent]

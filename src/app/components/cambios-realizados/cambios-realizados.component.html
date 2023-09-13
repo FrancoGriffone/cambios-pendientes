@@ -1,24 +1,72 @@
 <div>
     <div class="drops">
-        <p-dropdown [options]="tienda" [(ngModel)]="tiendaSelec" optionLabel="tienda" placeholder="Elige una tienda" class="spacingComponents"></p-dropdown>
-        <p-dropdown [options]="modulo" [(ngModel)]="moduloSelec" optionLabel="modulo" placeholder="Elige un módulo"></p-dropdown>
+        <p-dropdown 
+        [options]="tienda" 
+        [(ngModel)]="tiendaSelec" 
+        optionLabel="tienda" 
+        pTooltip="Elige entre las distintas tiendas"
+        tooltipPosition="bottom"  
+        placeholder="Elige una tienda" 
+        class="spacingComponents"></p-dropdown>
+        <p-dropdown 
+        [options]="modulo" 
+        [(ngModel)]="moduloSelec" 
+        optionLabel="modulo"
+        pTooltip="Elige entre los diferentes módulos"
+        tooltipPosition="bottom"  
+        placeholder="Elige un módulo"></p-dropdown>
     </div>
     <div class="datos">
-        <input type="number" pInputText [(ngModel)]="idProd" placeholder="Coloca el ID del producto" class="spacingComponents"/>
-        <input type="number" pInputText [(ngModel)]="filas" placeholder="Coloca cantidad de filas"/>
+        <input 
+        type="number" 
+        pInputText [(ngModel)]="idProd" 
+        placeholder="Coloca el ID del producto"
+        pTooltip="ID del producto (en caso de no seleccionar, se traen todos)"
+        tooltipPosition="bottom"  
+        class="spacingComponents"/>
+        <input 
+        type="number" 
+        pInputText [(ngModel)]="filas"
+        pTooltip="Cantidad de filas (en caso de no colocar, se toman 100)"
+        tooltipPosition="bottom"  
+        placeholder="Coloca cantidad de filas"/>
     </div>
     <div class="fechas">
-        <p-calendar [(ngModel)]="desde" [showIcon]="true" dateFormat="dd/mm/yy" class="spacingComponents"></p-calendar>
-        <p-calendar [(ngModel)]="hasta" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+        <p-calendar 
+        [(ngModel)]="desde" 
+        [showIcon]="true" 
+        dateFormat="dd/mm/yy"
+        pTooltip="Fecha inicial de búsqueda"
+        tooltipPosition="bottom"  
+        class="spacingComponents"></p-calendar>
+        <p-calendar 
+        [(ngModel)]="hasta" 
+        [showIcon]="true" 
+        dateFormat="dd/mm/yy"
+        pTooltip="Fecha final de búsqueda" 
+        tooltipPosition="bottom"></p-calendar>
     </div>
     <div class="grid">
+        <p-toast></p-toast>
         <div class="botones">
             <div>
-                <p-button label="Buscar" icon="pi pi-search" styleClass="p-button-raised p-button-text p-button-help" (onClick)="onSubmit()"></p-button>
-                <p-button label="Imprimir" icon="pi pi-print" styleClass="p-button-raised p-button-text p-button-danger" (onClick)="onSubmit()"></p-button>
+                <p-button 
+                label="Buscar" 
+                icon="pi pi-search" 
+                styleClass="p-button-raised p-button-text p-button-help" 
+                (onClick)="onSubmit()"></p-button>
+                <p-button 
+                label="Imprimir" 
+                icon="pi pi-print" 
+                styleClass="p-button-raised p-button-text p-button-danger" 
+                (onClick)="onSubmit()"></p-button>
             </div>
             <div>
-                <p-button label="Volver a cambios pendientes" icon="pi pi-replay" styleClass="p-button-raised p-button-text p-button-success" (onClick)="irPendientes()"></p-button>
+                <p-button 
+                label="Volver a cambios pendientes" 
+                icon="pi pi-replay" 
+                styleClass="p-button-raised p-button-text p-button-success"   
+                (onClick)="irPendientes()"></p-button>
             </div>
         </div>
         <ag-grid-angular

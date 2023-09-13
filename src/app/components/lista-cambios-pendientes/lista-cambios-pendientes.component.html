@@ -1,20 +1,57 @@
 <div>
     <div class="drops">
-        <p-dropdown [options]="tienda" [(ngModel)]="tiendaSelec" optionLabel="tienda" placeholder="Elige una tienda" class="spacingComponents"></p-dropdown>
-        <p-dropdown [options]="modulo" [(ngModel)]="moduloSelec" optionLabel="modulo" placeholder="Elige un módulo"></p-dropdown>
+        <p-dropdown 
+        [options]="tienda" 
+        [(ngModel)]="tiendaSelec" 
+        optionLabel="tienda" 
+        pTooltip="Elige entre las distintas tiendas"
+        tooltipPosition="bottom" 
+        placeholder="Elige una tienda" 
+        class="spacingComponents"></p-dropdown>
+        <p-dropdown 
+        [options]="modulo" 
+        [(ngModel)]="moduloSelec" 
+        optionLabel="modulo"
+        pTooltip="Elige entre los diferentes módulos"
+        tooltipPosition="bottom"  
+        placeholder="Elige un módulo"></p-dropdown>
     </div>
     <div class="fechas">
-        <p-calendar [(ngModel)]="desde" [showIcon]="true" dateFormat="dd/mm/yy" class="spacingComponents"></p-calendar>
-        <p-calendar [(ngModel)]="hasta" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+        <p-calendar 
+        [(ngModel)]="desde" 
+        [showIcon]="true" 
+        dateFormat="dd/mm/yy"
+        pTooltip="Fecha inicial de búsqueda"
+        tooltipPosition="bottom" 
+        class="spacingComponents"></p-calendar>
+        <p-calendar 
+        [(ngModel)]="hasta" 
+        [showIcon]="true" 
+        dateFormat="dd/mm/yy"
+        pTooltip="Fecha final de búsqueda" 
+        tooltipPosition="bottom" ></p-calendar>
     </div>
     <div class="grid">
+        <p-toast></p-toast>
         <div class="botones">
             <div>
-                <p-button label="Buscar" icon="pi pi-search" styleClass="p-button-raised p-button-text p-button-help" (onClick)="onSubmit()"></p-button>
-                <p-button label="Ver cambios realizados" icon="pi pi-cloud-upload" styleClass="p-button-raised p-button-text p-button-secondary" (onClick)="irCambios()"></p-button>
+                <p-button 
+                label="Buscar" 
+                icon="pi pi-search" 
+                styleClass="p-button-raised p-button-text p-button-help"  
+                (onClick)="onSubmit()"></p-button>
+                <p-button 
+                label="Actualizar seleccionados" 
+                icon="pi pi-cloud-upload" 
+                styleClass="p-button-raised p-button-text p-button-secondary"  
+                (onClick)="irCambios()"></p-button>
             </div>
             <div>
-                <p-button label="Ver cambios realizados" icon="pi pi-replay" styleClass="p-button-raised p-button-text p-button-success" (onClick)="irCambios()"></p-button>
+                <p-button 
+                label="Ver cambios realizados" 
+                icon="pi pi-replay" 
+                styleClass="p-button-raised p-button-text p-button-success"
+                (onClick)="irCambios()"></p-button>
             </div>
         </div>
         <ag-grid-angular

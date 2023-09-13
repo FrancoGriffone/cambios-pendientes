@@ -2,13 +2,15 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ColDef, DomLayoutType, GridApi, GridReadyEvent } from 'ag-grid-community';
 import * as dayjs from 'dayjs';
+import { MessageService } from 'primeng/api';
 import { forkJoin } from 'rxjs';
 import { ApiService } from 'src/app/service/api.service';
 
 @Component({
   selector: 'app-lista-cambios-pendientes',
   templateUrl: './lista-cambios-pendientes.component.html',
-  styleUrls: ['./lista-cambios-pendientes.component.scss']
+  styleUrls: ['./lista-cambios-pendientes.component.scss'],
+  providers: [MessageService]
 })
 export class ListaCambiosPendientesComponent {
 
@@ -62,7 +64,8 @@ export class ListaCambiosPendientesComponent {
   //<------------------------------------------------------------------------------------------------------------------>
 
   constructor(private api: ApiService,
-    private router: Router){}
+    private router: Router,
+    private messageService: MessageService){}
 
   ngOnInit() {
     //APIS
@@ -77,16 +80,28 @@ export class ListaCambiosPendientesComponent {
   }
 
   onSubmit(){
-    let data = {
-      'tiendaId': this.tiendaSelec.id,
-      'moduloId': this.moduloSelec.id,
-      'desde': dayjs(this.desde).format('YYYY-MM-DD'),
-      'hasta': dayjs(this.hasta).format('YYYY-MM-DD')
+    if (this.tiendaSelec == undefined){
+      this.messageService.add({ 
+        severity: 'error', 
+        summary: 'Error', 
+        detail: 'No seleccionaste ninguna tienda' });
+    } else if (this.moduloSelec == undefined) {
+      this.messageService.add({ 
+        severity: 'error', 
+        summary: 'Error', 
+        detail: 'No seleccionaste ningun módulo' });
+    } else {
+      let data = {
+        'tiendaId': this.tiendaSelec?.id,
+        'moduloId': this.moduloSelec?.id,
+        'desde': dayjs(this.desde).format('YYYY-MM-DD'),
+        'hasta': dayjs(this.hasta).format('YYYY-MM-DD')
+      }
+      this.api.obtenerListaPendientes(data).subscribe((data)=>{
+        this.datos = data
+        this.rowData = this.datos.data
+      })
     }
-    this.api.obtenerListaPendientes(data).subscribe((data)=>{
-      this.datos = data
-      this.rowData = this.datos.data
-    })
   }
   
   irCambios(){
