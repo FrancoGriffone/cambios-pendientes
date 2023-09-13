@@ -6,6 +6,10 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { CalendarModule } from 'primeng/calendar';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+
+
 
 //AG GRID
 import { AgGridModule } from 'ag-grid-angular';
@@ -37,9 +41,11 @@ import { HttpClientModule } from '@angular/common/http';
     ReactiveFormsModule,
     AgGridModule,
     SelectButtonModule,
+    ButtonModule,
     DropdownModule,
     InputTextModule,
     CalendarModule,
+    ToastModule
   ],
   providers: [],
   bootstrap: [AppComponent]

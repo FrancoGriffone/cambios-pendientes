@@ -1,0 +1,21 @@
+.drops {
+    display: flex;
+    justify-content: center;
+    margin-top: 2%;
+}
+.fechas {
+    display: flex;
+    justify-content: center;
+    margin: 2% 0% 5% 0%;
+}
+.grid {
+    .botones {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1%;
+    }
+}
+
+.spacingComponents {
+    margin-right: 2%;
+}

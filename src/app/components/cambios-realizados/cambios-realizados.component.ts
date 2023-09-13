@@ -96,6 +96,6 @@ export class CambiosRealizadosComponent {
   }
 
   irPendientes(){
-    this.router.navigate(['cambiosrealizados'])
+    this.router.navigate([''])
   }
 }
