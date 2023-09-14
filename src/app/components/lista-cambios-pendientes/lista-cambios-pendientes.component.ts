@@ -1,10 +1,12 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ColDef, DomLayoutType} from 'ag-grid-community';
 import * as dayjs from 'dayjs';
 import { ConfirmEventType, ConfirmationService, MessageService } from 'primeng/api';
-import { forkJoin } from 'rxjs';
+import { catchError, forkJoin, throwError } from 'rxjs';
 import { ApiService } from 'src/app/service/api.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-lista-cambios-pendientes',
@@ -16,7 +18,7 @@ export class ListaCambiosPendientesComponent {
 
   componentLoading: boolean = true
 
-  loadingProductos: boolean = true
+  loadingProductos: boolean = false
 
   productos: number = 0
 
@@ -120,7 +122,16 @@ export class ListaCambiosPendientesComponent {
         'desde': dayjs(this.desde).format('YYYY-MM-DD'),
         'hasta': dayjs(this.hasta).format('YYYY-MM-DD')
       }
-      this.api.obtenerListaPendientes(data).subscribe((data)=>{
+      this.api.obtenerListaPendientes(data).pipe(catchError((errors: HttpErrorResponse)=>{
+        Swal.fire({
+          title: '¡Error!',
+          text: 'La conexión a internet es muy débil o el servidor está experimentando problemas. Verifica el estado de tu red o ponte en contacto con quien está a cargo del servidor',
+          icon: 'error',
+          confirmButtonText: 'Volver atrás'
+        })
+        this.componentLoading = false;
+        return throwError(errors);
+      })).subscribe((data)=>{
         this.datos = data
         this.rowData = this.datos.data
         this.componentLoading = false;
@@ -190,7 +201,6 @@ export class ListaCambiosPendientesComponent {
   ngAfterViewInit() {
     setTimeout(() => {
       this.componentLoading = false;
-      this.loadingProductos = false
     });
    }
    

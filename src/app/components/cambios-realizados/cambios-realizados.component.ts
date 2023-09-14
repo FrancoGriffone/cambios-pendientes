@@ -1,10 +1,12 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ColDef, DomLayoutType, GridApi, GridReadyEvent } from 'ag-grid-community';
 import * as dayjs from 'dayjs';
 import { MessageService } from 'primeng/api';
-import { forkJoin } from 'rxjs';
+import { catchError, forkJoin, throwError } from 'rxjs';
 import { ApiService } from 'src/app/service/api.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-cambios-realizados',
@@ -114,7 +116,16 @@ export class CambiosRealizadosComponent {
         'filas': this.filas
       }
 
-      this.api.obtenerListaRealizados(datos).subscribe((data)=>{
+      this.api.obtenerListaRealizados(datos).pipe(catchError((errors: HttpErrorResponse)=>{
+        Swal.fire({
+          title: '¡Error!',
+          text: 'La conexión a internet es muy débil o el servidor está experimentando problemas. Verifica el estado de tu red o ponte en contacto con quien está a cargo del servidor',
+          icon: 'error',
+          confirmButtonText: 'Volver atrás'
+        })
+        this.componentLoading = false;
+        return throwError(errors);
+      })).subscribe((data)=>{
         this.rowData = data
         this.componentLoading = false;
       })
