@@ -14,6 +14,8 @@ import { ApiService } from 'src/app/service/api.service';
 })
 export class ListaCambiosPendientesComponent {
 
+  componentLoading: boolean = true
+
   position: string = 'center';
 
   tienda: any
@@ -94,6 +96,7 @@ export class ListaCambiosPendientesComponent {
   }
 
   onSubmit(){
+    this.componentLoading = true;
     if (this.tiendaSelec == undefined){
       this.messageService.add({ 
         severity: 'error', 
@@ -114,6 +117,7 @@ export class ListaCambiosPendientesComponent {
       this.api.obtenerListaPendientes(data).subscribe((data)=>{
         this.datos = data
         this.rowData = this.datos.data
+        this.componentLoading = false;
       })
     }
   }
@@ -171,4 +175,11 @@ export class ListaCambiosPendientesComponent {
   irCambios(){
     this.router.navigate(['cambiosrealizados'])
   }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.componentLoading = false;
+    });
+   }
+   
 }

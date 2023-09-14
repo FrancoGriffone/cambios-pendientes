@@ -35,3 +35,13 @@
 .spacingComponents {
     margin-right: 2%;
 }
+
+.loader-container {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background: black;
+    opacity: 0.8;
+    z-index: 99;
+    overflow: hidden;
+  }

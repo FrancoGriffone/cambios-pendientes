@@ -14,6 +14,8 @@ import { ApiService } from 'src/app/service/api.service';
 })
 export class CambiosRealizadosComponent {
 
+  componentLoading: boolean = true
+
   tienda: any
 
   tiendaSelec: any 
@@ -68,6 +70,7 @@ export class CambiosRealizadosComponent {
     private messageService: MessageService){}
 
   ngOnInit() {
+    this.componentLoading = true;
     //APIS
     let tiendas = this.api.obtenerTiendas()
     let modulos = this.api.obtenerModulos()
@@ -80,6 +83,7 @@ export class CambiosRealizadosComponent {
   }
 
   onSubmit(){
+    this.componentLoading = true;
     if (this.tiendaSelec == undefined){
       this.messageService.add({ 
         severity: 'error', 
@@ -110,6 +114,7 @@ export class CambiosRealizadosComponent {
 
       this.api.obtenerListaRealizados(datos).subscribe((data)=>{
         this.rowData = data
+        this.componentLoading = false;
       })
     }
   }
@@ -134,4 +139,10 @@ export class CambiosRealizadosComponent {
   irPendientes(){
     this.router.navigate([''])
   }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.componentLoading = false;
+    });
+   }
 }

@@ -8,8 +8,9 @@
     align-items: center;
     width: 100%;
     height: 75px;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-bottom: 2px solid rgb(138, 132, 132);
     .circle {
         display: flex;
         justify-content: center;

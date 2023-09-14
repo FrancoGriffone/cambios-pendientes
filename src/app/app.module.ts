@@ -11,6 +11,7 @@ import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 
 //AG GRID
@@ -52,7 +53,8 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     CalendarModule,
     ToastModule,
     TooltipModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    ProgressBarModule
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
