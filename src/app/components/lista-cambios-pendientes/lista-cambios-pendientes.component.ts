@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ColDef, DomLayoutType, GridApi, GridReadyEvent, IsRowSelectable } from 'ag-grid-community';
+import { ColDef, DomLayoutType} from 'ag-grid-community';
 import * as dayjs from 'dayjs';
 import { ConfirmEventType, ConfirmationService, MessageService } from 'primeng/api';
 import { forkJoin } from 'rxjs';
@@ -15,6 +15,10 @@ import { ApiService } from 'src/app/service/api.service';
 export class ListaCambiosPendientesComponent {
 
   componentLoading: boolean = true
+
+  loadingProductos: boolean = true
+
+  productos: number = 0
 
   position: string = 'center';
 
@@ -140,6 +144,8 @@ export class ListaCambiosPendientesComponent {
         acceptLabel: 'Si',
         rejectLabel: 'No',
         accept: () => {
+            this.loadingProductos = true;
+            let calculo = 100 / seleccionadas.length
             seleccionadas.forEach((e: any) => {
              let enviarProd = {
                'tiendaId': this.tiendaSelec.id,
@@ -150,9 +156,12 @@ export class ListaCambiosPendientesComponent {
                this.cambios = this.cambios + 1
                console.log(data)
                seleccionadas.shift()
+               this.productos = this.productos = calculo
                if (seleccionadas.length == 0){
                 this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: `¡Se actualizaron los datos! Guardaste ${this.cambios} cambios.` });
                 this.cambios = 0
+                this.loadingProductos = false;
+                this.productos = 0
               }
              })
             });
@@ -179,6 +188,7 @@ export class ListaCambiosPendientesComponent {
   ngAfterViewInit() {
     setTimeout(() => {
       this.componentLoading = false;
+      this.loadingProductos = false
     });
    }
    

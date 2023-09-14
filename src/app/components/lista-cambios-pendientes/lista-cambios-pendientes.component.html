@@ -1,6 +1,12 @@
-<!-- PROGRESS BAR -->
+<!-- PROGRESS BAR GENERAL-->
 <div class="loader-container" [hidden]="this.componentLoading == false">
-    <p-progressBar mode="indeterminate" [style]="{ height: '6px' }"></p-progressBar>
+    <p-progressBar mode="indeterminate" [style]="{ height: '6px'}"></p-progressBar>
+</div>
+
+<!-- PROGRESS BAR CARGA PRODUCTOS-->
+<div class="loader-prod" [hidden]="this.loadingProductos == false">
+    <span id="label_status" style="color: whitesmoke; position: relative; top: 50%;">Cargando productos. Aguarde mientras se termina la operación</span>
+    <p-progressBar [value]="this.productos" [style]="{ height: '10px', top: '50%'  }"></p-progressBar>
 </div>
 
 <div class="contenedor">
