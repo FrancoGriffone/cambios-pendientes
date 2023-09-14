@@ -46,7 +46,7 @@ export class ListaCambiosPendientesComponent {
     colDefs: ColDef[] = [
       {field: 'color', headerName: 'Color', width: 150, checkboxSelection: true, headerCheckboxSelection: true},
       {field: 'fechaStock', headerName: 'Fecha Stock', width: 150},
-      {field: 'fechaPrecios', headerName: 'Fecha Precios', width: 150, valueFormatter: params => dayjs(params.data.fecha).format('DD/MM/YYYY')},
+      {field: 'fechaPrecios', headerName: 'Fecha Precios', width: 150, valueFormatter: params => dayjs(params.data.fechaPrecios).format('DD/MM/YYYY')},
       //valueFormatter + fecha.slice SIRVE PARA ACORTAR EL STRING QUE LLEGA COMO FECHA
       {field: 'marca', headerName: 'Marca', width: 150},
       {field: 'nombre', headerName: 'Nombre', width: 150},
@@ -106,11 +106,13 @@ export class ListaCambiosPendientesComponent {
         severity: 'error', 
         summary: 'Error', 
         detail: 'No seleccionaste ninguna tienda' });
+        this.componentLoading = false;
     } else if (this.moduloSelec == undefined) {
       this.messageService.add({ 
         severity: 'error', 
         summary: 'Error', 
         detail: 'No seleccionaste ningun módulo' });
+        this.componentLoading = false;
     } else {
       let data = {
         'tiendaId': this.tiendaSelec?.id,
@@ -156,7 +158,7 @@ export class ListaCambiosPendientesComponent {
                this.cambios = this.cambios + 1
                console.log(data)
                seleccionadas.shift()
-               this.productos = this.productos = calculo
+               this.productos = this.productos + calculo
                if (seleccionadas.length == 0){
                 this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: `¡Se actualizaron los datos! Guardaste ${this.cambios} cambios.` });
                 this.cambios = 0

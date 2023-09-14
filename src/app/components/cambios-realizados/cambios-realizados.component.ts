@@ -89,11 +89,13 @@ export class CambiosRealizadosComponent {
         severity: 'error', 
         summary: 'Error', 
         detail: 'No seleccionaste ninguna tienda' });
+        this.componentLoading = false;
     } else if (this.moduloSelec == undefined) {
       this.messageService.add({ 
         severity: 'error', 
         summary: 'Error', 
         detail: 'No seleccionaste ningun módulo' });
+        this.componentLoading = false;
     } else {
       if(this.idProd == undefined) {
         this.idProd = null
@@ -124,7 +126,7 @@ export class CambiosRealizadosComponent {
     this.gridApi = params.api
   }
 
-  //BOTON PARA EXPORTAR LA LISTA INVISIBLE A UN EXCEL
+  //BOTON PARA EXPORTAR LA LISTA A UN EXCEL
   onBtExport() {
     if (this.rowData == undefined){
       this.messageService.add({ 
