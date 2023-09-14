@@ -25,6 +25,8 @@ import { AppComponent } from './app.component';
 import { ListaCambiosPendientesComponent } from './components/lista-cambios-pendientes/lista-cambios-pendientes.component';
 import { CambiosRealizadosComponent } from './components/cambios-realizados/cambios-realizados.component';
 import { HttpClientModule } from '@angular/common/http';
+import { NabvarComponent } from './components/nabvar/nabvar.component';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 
 
@@ -32,7 +34,8 @@ import { HttpClientModule } from '@angular/common/http';
   declarations: [
     AppComponent,
     ListaCambiosPendientesComponent,
-    CambiosRealizadosComponent
+    CambiosRealizadosComponent,
+    NabvarComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +54,9 @@ import { HttpClientModule } from '@angular/common/http';
     TooltipModule,
     ConfirmDialogModule
   ],
-  providers: [],
+  providers: [
+    {provide: LocationStrategy, useClass: HashLocationStrategy},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
