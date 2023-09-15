@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ColDef, DomLayoutType} from 'ag-grid-community';
 import * as dayjs from 'dayjs';
 import { ConfirmEventType, ConfirmationService, MessageService } from 'primeng/api';
-import { catchError, forkJoin, throwError } from 'rxjs';
+import { EMPTY, catchError, forkJoin, of, throwError } from 'rxjs';
 import { ApiService } from 'src/app/service/api.service';
 import Swal from 'sweetalert2';
 
@@ -39,6 +39,8 @@ export class ListaCambiosPendientesComponent {
   datos: any
 
   cambios: number = 0
+  
+  seleccionadas: any
 
   //<------------------------------------------------------------------------------------------------------------------>
   
@@ -141,8 +143,8 @@ export class ListaCambiosPendientesComponent {
 
   
   actualizar(position: string) {
-    let seleccionadas = this.gridApi.getSelectedRows()
-    if (seleccionadas.length == 0){
+    this.seleccionadas = this.gridApi.getSelectedRows()
+    if (this.seleccionadas.length == 0){
       this.messageService.add({ 
         severity: 'error', 
         summary: 'Error', 
@@ -151,33 +153,14 @@ export class ListaCambiosPendientesComponent {
     this.position = position;
 
     this.confirmationService.confirm({
-        message: '¿Estás seguro de querér confirmar estos cambios?',
+        message: `¿Estás seguro de querér confirmar estos ${this.seleccionadas.length} cambios?`,
         header: 'Confirmar actualización',
         icon: 'pi pi-info-circle',
         acceptLabel: 'Si',
         rejectLabel: 'No',
         accept: () => {
             this.loadingProductos = true;
-            let calculo = 100 / seleccionadas.length
-            seleccionadas.forEach((e: any) => {
-             let enviarProd = {
-               'tiendaId': this.tiendaSelec.id,
-               'moduloId': this.moduloSelec.id,
-               'productoId': e.productoId
-             }
-             this.api.procesarCambios(enviarProd).subscribe((data)=>{
-               this.cambios = this.cambios + 1
-               console.log(data)
-               seleccionadas.shift()
-               this.productos = this.productos + calculo
-               if (seleccionadas.length == 0){
-                this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: `¡Se actualizaron los datos! Guardaste ${this.cambios} cambios.` });
-                this.cambios = 0
-                this.loadingProductos = false;
-                this.productos = 0
-              }
-             })
-            });
+            this.cargaProds()
         },
         reject: (type: ConfirmEventType) => {
             switch (type) {
@@ -191,8 +174,37 @@ export class ListaCambiosPendientesComponent {
         },
         key: 'positionDialog'
     });
+    }
   }
-}
+
+  cargaProds(){
+    let seleccionadas = this.gridApi.getSelectedRows()
+    if(this.seleccionadas.length > 0){
+      let calculo = 100 / seleccionadas.length
+      let enviarProd = {
+        'tiendaId': this.tiendaSelec.id,
+        'moduloId': this.moduloSelec.id,
+        'productoId': this.seleccionadas[0].productoId
+      }
+      this.api.procesarCambios(enviarProd).pipe(catchError(catchError((errors: HttpErrorResponse)=>{
+        console.log('Hubo un error en la conexión a internet o la base de datos.')
+        return throwError(errors);
+    }))).subscribe((data)=>{
+        console.log(this.seleccionadas.length)
+        console.log(this.seleccionadas[0].productoId)
+        console.log(data)
+        this.productos = this.productos + calculo
+        this.cambios = this.cambios + 1
+        this.seleccionadas.shift()
+        this.cargaProds()
+    })
+    } else {
+      this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: `¡Se actualizaron los datos! Guardaste ${this.cambios} cambios.` });
+      this.cambios = 0
+      this.loadingProductos = false;
+      this.productos = 0
+    }
+  }
   
   irCambios(){
     this.router.navigate(['cambiosrealizados'])
