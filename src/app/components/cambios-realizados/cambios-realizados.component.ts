@@ -47,7 +47,7 @@ export class CambiosRealizadosComponent {
       {field: 'tienda', headerName: 'Tienda', width: 150},
       {field: 'modulo', headerName: 'Módulo', width: 150},
       {field: 'respuesta', headerName: 'Respuesta', width: 150},
-      {field: 'fyH', headerName: 'Fecha y hora', width: 150, valueFormatter: params => dayjs(params.data.fecha).format('DD/MM/YYYY')},
+      {field: 'fyH', headerName: 'Fecha y hora', width: 150, valueFormatter: params => dayjs(params.data.fecha).format('DD/MM/YYYY/h:mm:ss A')},
     ];
     
     public rowData!: any; //FILAS AG GRID

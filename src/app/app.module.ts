@@ -28,6 +28,7 @@ import { CambiosRealizadosComponent } from './components/cambios-realizados/camb
 import { HttpClientModule } from '@angular/common/http';
 import { NabvarComponent } from './components/nabvar/nabvar.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { HammerModule } from "../../node_modules/@angular/platform-browser";
 
 
 
@@ -54,11 +55,12 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     ToastModule,
     TooltipModule,
     ConfirmDialogModule,
-    ProgressBarModule
+    ProgressBarModule,
+    HammerModule,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }
