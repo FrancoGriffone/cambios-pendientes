@@ -38,6 +38,8 @@ export class ListaCambiosPendientesComponent {
 
   datos: any
 
+  data: any
+
   cambios: number = 0
   
   seleccionadas: any
@@ -101,6 +103,10 @@ export class ListaCambiosPendientesComponent {
     private confirmationService: ConfirmationService){}
 
   ngOnInit() {
+    //OBTENEMOS DATOS DEL SESSIONSTORAGE
+    this.data = sessionStorage.getItem('dataPendientes');
+    this.data = JSON.parse(this.data)
+
     //APIS
     let tiendas = this.api.obtenerTiendas()
     let modulos = this.api.obtenerModulos()
@@ -109,6 +115,14 @@ export class ListaCambiosPendientesComponent {
     .subscribe(results =>{
       this.tienda = results[0]
       this.modulo = results[1]
+
+      //SETEAR DATOS DEL SESSIONSTORAGE
+      if(this.data != null){
+        this.desde = dayjs(this.data?.desde).toDate()
+        this.hasta = dayjs(this.data?.hasta).toDate()
+      }
+      this.tiendaSelec = this.tienda?.find((x: any) => x?.id == this.data?.tiendaId);
+      this.moduloSelec = this.modulo?.find((x: any) => x?.id == this.data?.moduloId);
     })
   }
 
@@ -147,13 +161,17 @@ export class ListaCambiosPendientesComponent {
         detail: 'No seleccionaste ningun módulo' });
         this.componentLoading = false;
     } else {
-      let data = {
+
+      this.data = {
         'tiendaId': this.tiendaSelec?.id,
         'moduloId': this.moduloSelec?.id,
         'desde': dayjs(this.desde).format('YYYY-MM-DD'),
         'hasta': dayjs(this.hasta).format('YYYY-MM-DD')
       }
-      this.api.obtenerListaPendientes(data).pipe(catchError((errors: HttpErrorResponse)=>{
+
+      sessionStorage.setItem('dataPendientes', JSON.stringify(this.data));
+
+      this.api.obtenerListaPendientes(this.data).pipe(catchError((errors: HttpErrorResponse)=>{
         Swal.fire({
           title: '¡Error!',
           text: 'La conexión a internet es muy débil o el servidor está experimentando problemas. Verifica el estado de tu red o ponte en contacto con quien está a cargo del servidor',

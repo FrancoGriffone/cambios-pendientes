@@ -36,6 +36,8 @@ export class CambiosRealizadosComponent {
 
   sizeBtn: boolean = true
 
+  data: any
+
   //<------------------------------------------------------------------------------------------------------------------>
   
   //AG GRID VARIABLES
@@ -77,6 +79,11 @@ export class CambiosRealizadosComponent {
 
   ngOnInit() {
     this.componentLoading = true;
+    
+    //OBTENEMOS DATOS DEL SESSIONSTORAGE
+    this.data = sessionStorage.getItem('dataCompletos');
+    this.data = JSON.parse(this.data)
+
     //APIS
     let tiendas = this.api.obtenerTiendas()
     let modulos = this.api.obtenerModulos()
@@ -85,6 +92,16 @@ export class CambiosRealizadosComponent {
     .subscribe(results =>{
       this.tienda = results[0]
       this.modulo = results[1]
+
+      //SETEAR DATOS DEL SESSIONSTORAGE
+      if(this.data != null){
+        this.desde = dayjs(this.data?.desde).toDate()
+        this.hasta = dayjs(this.data?.hasta).toDate()
+      }
+      this.filas = this.data?.filas
+      this.idProd = this.data?.idProd
+      this.tiendaSelec = this.tienda?.find((x: any) => x?.id == this.data?.tiendaId);
+      this.moduloSelec = this.modulo?.find((x: any) => x?.id == this.data?.moduloId);
     })
   }
 
@@ -111,7 +128,7 @@ export class CambiosRealizadosComponent {
         this.filas = 100
       }
   
-      let datos = {
+      this.data = {
         'tiendaId': this.tiendaSelec.id,
         'moduloId': this.moduloSelec.id,
         'productoId': this.idProd,
@@ -120,7 +137,9 @@ export class CambiosRealizadosComponent {
         'filas': this.filas
       }
 
-      this.api.obtenerListaRealizados(datos).pipe(catchError((errors: HttpErrorResponse)=>{
+      sessionStorage.setItem('dataCompletos', JSON.stringify(this.data));
+
+      this.api.obtenerListaRealizados(this.data).pipe(catchError((errors: HttpErrorResponse)=>{
         Swal.fire({
           title: '¡Error!',
           text: 'La conexión a internet es muy débil o el servidor está experimentando problemas. Verifica el estado de tu red o ponte en contacto con quien está a cargo del servidor',
