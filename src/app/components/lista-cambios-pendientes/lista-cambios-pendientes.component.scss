@@ -5,26 +5,39 @@
     display: flex;
     flex-direction: column;
     align-items: center;    
-    .card {
-        width: 50%;
-        margin: 2% 0% 2% 0%;
+    .buscador {
+        width: 100%;
+        padding: 5px;
+        // margin: 2% 0% 2% 0%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
         flex: none;
         text-align: center;
-        .drops {
+        .opciones {
             display: flex;
+            flex-direction: row;
             justify-content: center;
-            padding-top: 2%;
+            padding: 10px;
+            .drops {
+                display: flex;
+                justify-content: center;
+            }
+            .fechas {
+                display: flex;
+                justify-content: center;
+            }
         }
-        .fechas {
-            display: flex;
-            justify-content: center;
-            margin: 2% 0% 5% 0%;
-        }
+    }
+    .titulo {
+        color: whitesmoke;
+        margin: 3%;
     }
 }
 .grid {
-    width: 90%;
-    margin: 2% 0% 2% 0%;
+    width: 100%;
+    margin-bottom: 2%;
     .botones {
         display: flex;
         justify-content: space-between;
@@ -33,7 +46,7 @@
 }
 
 .spacingComponents {
-    margin-right: 2%;
+    margin-right: 10px;
 }
 
 .loader-container {
@@ -55,3 +68,4 @@
     z-index: 99;
     overflow: hidden;
 }
+

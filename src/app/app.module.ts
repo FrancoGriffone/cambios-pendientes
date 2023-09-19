@@ -13,7 +13,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ProgressBarModule } from 'primeng/progressbar';
 
-
 //AG GRID
 import { AgGridModule } from 'ag-grid-angular';
 import 'ag-grid-enterprise';
@@ -28,7 +27,6 @@ import { CambiosRealizadosComponent } from './components/cambios-realizados/camb
 import { HttpClientModule } from '@angular/common/http';
 import { NabvarComponent } from './components/nabvar/nabvar.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-import { HammerModule } from "../../node_modules/@angular/platform-browser";
 
 
 
@@ -56,7 +54,6 @@ import { HammerModule } from "../../node_modules/@angular/platform-browser";
     TooltipModule,
     ConfirmDialogModule,
     ProgressBarModule,
-    HammerModule,
   ],
   providers: [
     {provide: LocationStrategy, useClass: HashLocationStrategy},

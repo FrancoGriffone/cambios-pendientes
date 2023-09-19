@@ -42,49 +42,36 @@ export class ListaCambiosPendientesComponent {
   
   seleccionadas: any
 
+  sizeBtn: boolean = true
+
   //<------------------------------------------------------------------------------------------------------------------>
   
   //AG GRID VARIABLES
   public domLayout: DomLayoutType = 'autoHeight';
 
-    // colDefs: ColDef[] = [
-    //   {field: 'productoId', headerName: 'ID producto', width: 150, checkboxSelection: true, headerCheckboxSelection: true},
-    //   {field: 'sku', headerName: 'SKU', width: 150},
-    //   {field: 'nombre', headerName: 'Nombre', width: 150},
-    //   {field: 'marca', headerName: 'Marca', width: 150},
-    //   {field: 'color', headerName: 'Color', width: 150},
-    //   {field: 'talle', headerName: 'Talle', width: 150},
-    //   {field: 'superior', headerName: 'Superior', width: 150},
-    //   {field: 'precioNormal', headerName: 'Precio Normal', width: 150},
-    //   {field: 'precioRebajado', headerName: 'Precio Rebajado', width: 150},
-    //   {field: 'fechaPrecios', headerName: 'Fecha Precios', width: 150, valueFormatter: params => dayjs(params.data.fechaPrecios).format('DD/MM/YYYY/h:mm:ss A')},
-    //   {field: 'stock', headerName: 'Stock', width: 150},
-    //   {field: 'fechaStock', headerName: 'Fecha Stock', width: 150, valueFormatter: params => dayjs(params.data.fechaStock).format('DD/MM/YYYY/h:mm:ss A')},
-    // ];
-
     precios: ColDef[] = [
-      {field: 'productoId', headerName: 'ID producto', width: 150, checkboxSelection: true, headerCheckboxSelection: true},
-      {field: 'sku', headerName: 'SKU', width: 150},
-      {field: 'nombre', headerName: 'Nombre', width: 150},
-      {field: 'marca', headerName: 'Marca', width: 150},
-      {field: 'color', headerName: 'Color', width: 150},
-      {field: 'talle', headerName: 'Talle', width: 150},
-      {field: 'superior', headerName: 'Superior', width: 150},
-      {field: 'precioNormal', headerName: 'Precio Normal', width: 150},
-      {field: 'precioRebajado', headerName: 'Precio Rebajado', width: 150},
-      {field: 'fechaPrecios', headerName: 'Fecha Precios', width: 150, valueFormatter: params => dayjs(params.data.fechaPrecios).format('DD/MM/YYYY/h:mm:ss A')},
+      {field: 'productoId', headerName: 'ID producto', width: 140, checkboxSelection: true, headerCheckboxSelection: true},
+      {field: 'sku', headerName: 'SKU'},
+      {field: 'nombre', headerName: 'Nombre'},
+      {field: 'marca', headerName: 'Marca'},
+      {field: 'color', headerName: 'Color'},
+      {field: 'talle', headerName: 'Talle', type: 'rightAligned'},
+      {field: 'superior', headerName: 'Superior'},
+      {field: 'precioNormal', headerName: 'Precio Normal', type: 'rightAligned'},
+      {field: 'precioRebajado', headerName: 'Precio Rebajado', type: 'rightAligned'},
+      {field: 'fechaPrecios', headerName: 'Fecha Precios', type: 'rightAligned', valueFormatter: params => dayjs(params.data.fechaPrecios).format('DD/MM/YYYY h:mm')},
     ];
 
     stock: ColDef[] = [
-      {field: 'productoId', headerName: 'ID producto', width: 150, checkboxSelection: true, headerCheckboxSelection: true},
-      {field: 'sku', headerName: 'SKU', width: 150},
-      {field: 'nombre', headerName: 'Nombre', width: 150},
-      {field: 'marca', headerName: 'Marca', width: 150},
-      {field: 'color', headerName: 'Color', width: 150},
-      {field: 'talle', headerName: 'Talle', width: 150},
-      {field: 'superior', headerName: 'Superior', width: 150},
-      {field: 'stock', headerName: 'Stock', width: 150},
-      {field: 'fechaStock', headerName: 'Fecha Stock', width: 150, valueFormatter: params => dayjs(params.data.fechaStock).format('DD/MM/YYYY/h:mm:ss A')},
+      {field: 'productoId', headerName: 'ID producto', checkboxSelection: true, headerCheckboxSelection: true},
+      {field: 'sku', headerName: 'SKU'},
+      {field: 'nombre', headerName: 'Nombre'},
+      {field: 'marca', headerName: 'Marca'},
+      {field: 'color', headerName: 'Color'},
+      {field: 'talle', headerName: 'Talle', type: 'rightAligned'},
+      {field: 'superior', headerName: 'Superior'},
+      {field: 'stock', headerName: 'Stock', type: 'rightAligned'},
+      {field: 'fechaStock', headerName: 'Fecha Stock', type: 'rightAligned', valueFormatter: params => dayjs(params.data.fechaStock).format('DD/MM/YYYY h:mm')},
     ];
     
     public colDefs: ColDef[] = this.precios; //COLUMNAS AG GRID
@@ -102,6 +89,7 @@ export class ListaCambiosPendientesComponent {
 
     gridApi: any;
     gridColumnApi: any;
+    rowHeight: any;
 
   //FIN AG GRID VARIABLES 
 
@@ -127,6 +115,21 @@ export class ListaCambiosPendientesComponent {
   onGridReady(params: any){
     this.gridApi = params.api
     this.gridColumnApi = params.columnApi
+    this.rowHeight = 25;
+  }
+
+  sizeToFit() {
+    this.gridApi.sizeColumnsToFit();
+    this.sizeBtn = !this.sizeBtn
+  }
+
+  autoSizeAll(skipHeader: boolean) {
+    const allColumnIds: string[] = [];
+    this.gridColumnApi.getColumns()!.forEach((column: { getId: () => string; }) => {
+      allColumnIds.push(column.getId());
+    });
+    this.gridColumnApi.autoSizeColumns(allColumnIds, skipHeader);
+    this.sizeBtn = !this.sizeBtn
   }
 
   onSubmit(){
