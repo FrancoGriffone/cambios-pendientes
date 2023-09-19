@@ -97,11 +97,11 @@ export class CambiosRealizadosComponent {
       if(this.data != null){
         this.desde = dayjs(this.data?.desde).toDate()
         this.hasta = dayjs(this.data?.hasta).toDate()
+        this.filas = this.data?.filas
+        this.idProd = this.data?.idProd
+        this.tiendaSelec = this.tienda?.find((x: any) => x?.id == this.data?.tiendaId);
+        this.moduloSelec = this.modulo?.find((x: any) => x?.id == this.data?.moduloId);
       }
-      this.filas = this.data?.filas
-      this.idProd = this.data?.idProd
-      this.tiendaSelec = this.tienda?.find((x: any) => x?.id == this.data?.tiendaId);
-      this.moduloSelec = this.modulo?.find((x: any) => x?.id == this.data?.moduloId);
     })
   }
 
