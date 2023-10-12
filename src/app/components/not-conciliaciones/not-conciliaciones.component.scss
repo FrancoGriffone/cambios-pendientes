@@ -1,0 +1,28 @@
+.contenedor {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: url("../../../assets/mudanza.jpg");
+    background-size: cover;
+    .notificacion {
+        width: 50%;
+        margin-top: 2%;
+        background-color: black;
+        color: blanchedalmond;
+    }
+    a {
+        margin-top: 2%;
+        text-decoration: none;
+        color: blanchedalmond;
+        .boton {
+            background-color: black;
+        }
+    }
+    .imagen {
+        width: 100%;
+        height: 100%;
+    }
+}

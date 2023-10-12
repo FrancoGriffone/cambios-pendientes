@@ -27,6 +27,7 @@ import { CambiosRealizadosComponent } from './components/cambios-realizados/camb
 import { HttpClientModule } from '@angular/common/http';
 import { NabvarComponent } from './components/nabvar/nabvar.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { NotConciliacionesComponent } from './components/not-conciliaciones/not-conciliaciones.component';
 
 
 
@@ -35,7 +36,8 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     AppComponent,
     ListaCambiosPendientesComponent,
     CambiosRealizadosComponent,
-    NabvarComponent
+    NabvarComponent,
+    NotConciliacionesComponent
   ],
   imports: [
     BrowserModule,

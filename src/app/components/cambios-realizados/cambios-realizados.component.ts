@@ -234,7 +234,7 @@ autoSizeAll(skipHeader: boolean) {
 
   //IR A CAMBIOS PENDIENTES
   irPendientes(){
-    this.router.navigate([''])
+    this.router.navigate(['/cambiospendientes'])
   }
 
 //----------------------------------------------------------------------------------------------------------------//
