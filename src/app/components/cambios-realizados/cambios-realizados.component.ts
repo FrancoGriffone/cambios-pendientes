@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { ColDef, DomLayoutType, GridApi, GridReadyEvent } from 'ag-grid-community';
 import * as dayjs from 'dayjs';
@@ -16,29 +17,39 @@ import Swal from 'sweetalert2';
 })
 export class CambiosRealizadosComponent {
 
-  componentLoading: boolean = true
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
 
-  tienda: any
+  //VARIABLES
+  componentLoading: boolean = true //BOOLEAN PARA LA BARRA DE CARGA EN GENERAL
 
-  tiendaSelec: any 
+  tienda: any //SETEA LAS TIENDAS QUE ESTÁN CARGADAS EN LA API
 
-  modulo: any
+  tiendaSelec: any //TIENDA SELECCIONADA EN EL DROPDOWN
 
-  moduloSelec: any
+  modulo: any //SETEA LOS MÓDULOS QUE ESTÁN CARGADOS EN LA API
 
-  idProd: any
+  moduloSelec: any //MÓDULO SELECCIONADO EN EL DROPDOWN
 
-  filas: any
+  idProd: any //PARA EL INPUT DONDE SE COLOCA EL ID DEL PRODUCTO (ES OPCIONAL COMPLETARLO)
 
-  desde = dayjs().subtract(1, 'month').toDate()
+  filas: any //PARA EL INPUT DONDE SE COLOCA LA CANTIDAD DE FILAS (ES OPCIONAL COMPLETARLO)
 
-  hasta = dayjs().toDate()
+  desde = dayjs().subtract(1, 'day').toDate() //FECHA A PARTIR DE LA QUE BUSCA
 
-  sizeBtn: boolean = true
+  inputDesde = dayjs(this.desde).format('DD/MM/YYYY HH:mm')
 
-  data: any
+  hasta = dayjs().toDate() //FECHA HASTA DONDE BUSCA
 
-  //<------------------------------------------------------------------------------------------------------------------>
+  inputHasta = dayjs(this.hasta).format('DD/MM/YYYY HH:mm')
+
+  data: any //DATOS COLOCADOS PARA CARGAR EL AG GRID, SE SETEAN EN EL SESSION STORAGE
+
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
   
   //AG GRID VARIABLES
   public domLayout: DomLayoutType = 'autoHeight';
@@ -51,7 +62,7 @@ export class CambiosRealizadosComponent {
       {field: 'tienda', headerName: 'Tienda'},
       {field: 'modulo', headerName: 'Módulo'},
       {field: 'respuesta', headerName: 'Respuesta'},
-      {field: 'fyH', headerName: 'Fecha y hora', valueFormatter: params => dayjs(params.data.fecha).format('DD/MM/YYYY h:mm')},
+      {field: 'fyH', headerName: 'Fecha y hora', valueFormatter: params => dayjs(params.data.fyH).format('DD/MM/YYYY HH:mm')},
     ];
     
     public rowData!: any; //FILAS AG GRID
@@ -68,20 +79,30 @@ export class CambiosRealizadosComponent {
   private gridApi!: GridApi //EVENTO GRID API
   gridColumnApi: any;
   rowHeight: any;
+
+  sizeBtn: boolean = true //BOTÓN PARA EL CAMBIO DE TAMAÑO DE COLUMNAS AG GRID
   
   //FIN AG GRID VARIABLES 
 
-  //<------------------------------------------------------------------------------------------------------------------>
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
   
   constructor(private api: ApiService,
     private router: Router,
-    private messageService: MessageService){}
+    private messageService: MessageService,
+    private titleService: Title){
+      //CAMBIO DE TITULO
+      this.titleService.setTitle("Actualizar Ecommerce - realizados");
+    }
 
   ngOnInit() {
     this.componentLoading = true;
     
     //OBTENEMOS DATOS DEL SESSIONSTORAGE
-    this.data = sessionStorage.getItem('dataCompletos');
+    this.data = sessionStorage.getItem('dataSession');
     this.data = JSON.parse(this.data)
 
     //APIS
@@ -105,6 +126,62 @@ export class CambiosRealizadosComponent {
     })
   }
 
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
+
+  //FUCIONES AG GRID
+
+//EVENTO ONGRID, CUANDO SE CARGA LA GRID TRAE LOS DATOS
+onGridReady(params: GridReadyEvent){
+  this.gridApi = params.api
+  this.gridColumnApi = params.columnApi
+  this.rowHeight = 25;
+}
+
+//BOTON PARA EXPORTAR LA LISTA A UN EXCEL
+onBtExport() {
+  if (this.rowData == undefined){
+    this.messageService.add({ 
+      severity: 'warn', 
+      summary: 'Error', 
+      detail: 'La lista no tiene datos. Cargue primero los datos para poder imprimirlos.' });
+  } else {
+    this.gridApi.exportDataAsExcel();
+  }
+}
+
+sizeToFit() {
+  this.gridApi.sizeColumnsToFit();
+  this.sizeBtn = !this.sizeBtn
+}
+
+autoSizeAll(skipHeader: boolean) {
+  const allColumnIds: string[] = [];
+  this.gridColumnApi.getColumns()!.forEach((column: { getId: () => string; }) => {
+    allColumnIds.push(column.getId());
+  });
+  this.gridColumnApi.autoSizeColumns(allColumnIds, skipHeader);
+  this.sizeBtn = !this.sizeBtn
+}
+
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
+
+  setearFechaDesde(){
+    this.desde = dayjs(this.inputDesde).toDate()
+  }
+
+  setearFechaHasta(){
+    this.hasta = dayjs(this.inputHasta).toDate()
+  }
+
+  //FUNCIÓN PARA BUSCAR CON LOS PÁRAMETROS ESTABLECIDOS
   onSubmit(){
     this.componentLoading = true;
     if (this.tiendaSelec == undefined){
@@ -132,12 +209,12 @@ export class CambiosRealizadosComponent {
         'tiendaId': this.tiendaSelec.id,
         'moduloId': this.moduloSelec.id,
         'productoId': this.idProd,
-        'desde': dayjs(this.desde).format('YYYY-MM-DD'),
-        'hasta': dayjs(this.hasta).format('YYYY-MM-DD'),
+        'desde': dayjs(this.desde).format('YYYY-MM-DDTHH:mm:ss.00'),
+        'hasta': dayjs(this.hasta).format('YYYY-MM-DDTHH:mm:ss.00'),
         'filas': this.filas
       }
 
-      sessionStorage.setItem('dataCompletos', JSON.stringify(this.data));
+      sessionStorage.setItem('dataSession', JSON.stringify(this.data));
 
       this.api.obtenerListaRealizados(this.data).pipe(catchError((errors: HttpErrorResponse)=>{
         Swal.fire({
@@ -155,43 +232,18 @@ export class CambiosRealizadosComponent {
     }
   }
 
-  //EVENTO ONGRID, CUANDO SE CARGA LA GRID TRAE LOS DATOS
-  onGridReady(params: GridReadyEvent){
-    this.gridApi = params.api
-    this.gridColumnApi = params.columnApi
-    this.rowHeight = 25;
-  }
-
-  //BOTON PARA EXPORTAR LA LISTA A UN EXCEL
-  onBtExport() {
-    if (this.rowData == undefined){
-      this.messageService.add({ 
-        severity: 'warn', 
-        summary: 'Error', 
-        detail: 'La lista no tiene datos. Cargue primero los datos para poder imprimirlos.' });
-    } else {
-      this.gridApi.exportDataAsExcel();
-    }
-  }
-
-  sizeToFit() {
-    this.gridApi.sizeColumnsToFit();
-    this.sizeBtn = !this.sizeBtn
-  }
-
-  autoSizeAll(skipHeader: boolean) {
-    const allColumnIds: string[] = [];
-    this.gridColumnApi.getColumns()!.forEach((column: { getId: () => string; }) => {
-      allColumnIds.push(column.getId());
-    });
-    this.gridColumnApi.autoSizeColumns(allColumnIds, skipHeader);
-    this.sizeBtn = !this.sizeBtn
-  }
-
+  //IR A CAMBIOS PENDIENTES
   irPendientes(){
-    this.router.navigate([''])
+    this.router.navigate(['actualizarEcommerce/cambiospendientes'])
   }
 
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
+
+  //AFTER INIT
   ngAfterViewInit() {
     setTimeout(() => {
       this.componentLoading = false;

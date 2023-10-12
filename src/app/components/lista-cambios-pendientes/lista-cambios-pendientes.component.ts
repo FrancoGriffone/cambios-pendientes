@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { ColDef, DomLayoutType} from 'ag-grid-community';
 import * as dayjs from 'dayjs';
@@ -16,43 +17,53 @@ import Swal from 'sweetalert2';
 })
 export class ListaCambiosPendientesComponent {
 
-  componentLoading: boolean = true
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
 
-  loadingProductos: boolean = false
+  //VARIABLES
+  componentLoading: boolean = true //BOOLEAN PARA LA BARRA DE CARGA EN GENERAL
 
-  productos: any = 0
+  loadingProductos: boolean = false //BOOLEAN PARA LA BARRA DE CARGA DE PRODUCTOS AL CONFIRMAR EL DIALOG
 
-  position: string = 'center';
+  productos: any = 0 //PARA SETEAR EL PORCENTAJE EN LA BARRA DE CARGA DE CADA PRODUCTO
 
-  tienda: any
+  barraProgreso: any = 0 //PARA IR SUMANDO LA BARRA DE PROGRESO, QUE EN productos SE VE SIN TANTOS DECIMALES
 
-  tiendaSelec: any 
+  position: string = 'center'; //POSICIÓN DEL DIALOG DE CONFIRMACIÓN
 
-  modulo: any
+  tienda: any //SETEA LAS TIENDAS QUE ESTÁN CARGADAS EN LA API
 
-  moduloSelec: any
+  tiendaSelec: any //TIENDA SELECCIONADA EN EL DROPDOWN
 
-  desde = dayjs().subtract(1, 'month').toDate()
+  modulo: any //SETEA LOS MÓDULOS QUE ESTÁN CARGADOS EN LA API
 
-  hasta = dayjs().toDate()
+  moduloSelec: any //MÓDULO SELECCIONADO EN EL DROPDOWN
 
-  datos: any
+  desde = dayjs().subtract(1, 'day').toDate() //FECHA A PARTIR DE LA QUE BUSCA
 
-  data: any
+  inputDesde = dayjs(this.desde).format('DD/MM/YYYY HH:mm')
 
-  cambios: number = 0
+  hasta = dayjs().toDate() //FECHA HASTA DONDE BUSCA
+
+  inputHasta = dayjs(this.hasta).format('DD/MM/YYYY HH:mm')
+
+  datos: any //BAJAMOS LA DATA RECIBIDA AL SUSCRIBIRSE A LA API, QUE POSTERIORMENTE SETEAMOS EN LA AG GRID
+
+  data: any //DATOS COLOCADOS PARA CARGAR EL AG GRID, SE SETEAN EN EL SESSION STORAGE
+
+  cambios: number = 0 //PARA SETEAR LA CANTIDAD DE CAMBIOS REALIZADOS, LO TOMA EL TOAST AL FINALIZAR 
   
-  seleccionadas: any
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
 
-  sizeBtn: boolean = true
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
 
-  //<------------------------------------------------------------------------------------------------------------------>
-  
   //AG GRID VARIABLES
   public domLayout: DomLayoutType = 'autoHeight';
 
     precios: ColDef[] = [
-      {field: 'productoId', headerName: 'ID producto', width: 140, checkboxSelection: true, headerCheckboxSelection: true},
+      {field: 'productoId', headerName: 'ID producto', width: 140, checkboxSelection: true, headerCheckboxSelection: true, headerCheckboxSelectionFilteredOnly: true},
       {field: 'sku', headerName: 'SKU'},
       {field: 'nombre', headerName: 'Nombre'},
       {field: 'marca', headerName: 'Marca'},
@@ -93,18 +104,30 @@ export class ListaCambiosPendientesComponent {
     gridColumnApi: any;
     rowHeight: any;
 
+    sizeBtn: boolean = true //BOTÓN PARA EL CAMBIO DE TAMAÑO DE COLUMNAS AG GRID
+
+    seleccionadas: any //FILAS SELECCIONADAS CON EL CHECKBOX
+
   //FIN AG GRID VARIABLES 
 
-  //<------------------------------------------------------------------------------------------------------------------>
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
 
   constructor(private api: ApiService,
     private router: Router,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService){}
+    private confirmationService: ConfirmationService,
+    private titleService: Title){
+      //CAMBIO DE TITULO
+      this.titleService.setTitle("Actualizar Ecommerce - pendientes");
+    }
 
   ngOnInit() {
     //OBTENEMOS DATOS DEL SESSIONSTORAGE
-    this.data = sessionStorage.getItem('dataPendientes');
+    this.data = sessionStorage.getItem('dataSession');
     this.data = JSON.parse(this.data)
 
     //APIS
@@ -126,6 +149,13 @@ export class ListaCambiosPendientesComponent {
     })
   }
 
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
+
+  //FUNCIONES AG GRID
   onGridReady(params: any){
     this.gridApi = params.api
     this.gridColumnApi = params.columnApi
@@ -146,6 +176,21 @@ export class ListaCambiosPendientesComponent {
     this.sizeBtn = !this.sizeBtn
   }
 
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
+
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
+
+  setearFechaDesde(){ 
+  this.desde = dayjs(this.inputDesde).toDate()
+  }
+
+  setearFechaHasta(){
+    this.hasta = dayjs(this.inputHasta).toDate()
+  }
+
+  //FUNCIÓN PARA BUSCAR CON LOS PÁRAMETROS ESTABLECIDOS
   onSubmit(){
     this.componentLoading = true;
     if (this.tiendaSelec == undefined){
@@ -165,11 +210,11 @@ export class ListaCambiosPendientesComponent {
       this.data = {
         'tiendaId': this.tiendaSelec?.id,
         'moduloId': this.moduloSelec?.id,
-        'desde': dayjs(this.desde).format('YYYY-MM-DD'),
-        'hasta': dayjs(this.hasta).format('YYYY-MM-DD')
+        'desde': dayjs(this.desde).format('YYYY-MM-DDTHH:mm:ss.00'),
+        'hasta': dayjs(this.hasta).format('YYYY-MM-DDTHH:mm:ss.00')
       }
 
-      sessionStorage.setItem('dataPendientes', JSON.stringify(this.data));
+      sessionStorage.setItem('dataSession', JSON.stringify(this.data));
 
       this.api.obtenerListaPendientes(this.data).pipe(catchError((errors: HttpErrorResponse)=>{
         Swal.fire({
@@ -193,7 +238,7 @@ export class ListaCambiosPendientesComponent {
     }
   }
 
-  
+  //FUNCIÓN QUE ABRE EL DIALOG DE CONFIRMACIÓN
   actualizar(position: string) {
     this.seleccionadas = this.gridApi.getSelectedRows()
     if (this.seleccionadas.length == 0){
@@ -205,7 +250,7 @@ export class ListaCambiosPendientesComponent {
     this.position = position;
 
     this.confirmationService.confirm({
-        message: `¿Estás seguro de querér confirmar estos ${this.seleccionadas.length} cambios?`,
+        message: `<pre>¿Estás seguro de querér confirmar estos ${this.seleccionadas.length} cambios?\nTIENDA: ${this.tiendaSelec.tienda}, MODULO: ${this.moduloSelec.modulo}</pre>`,
         header: 'Confirmar actualización',
         icon: 'pi pi-info-circle',
         acceptLabel: 'Si',
@@ -229,6 +274,7 @@ export class ListaCambiosPendientesComponent {
     }
   }
 
+  //FUNCIÓN DE CARGA DE PRODUCTOS
   cargaProds(){
     let seleccionadas = this.gridApi.getSelectedRows()
     if(this.seleccionadas.length > 0){
@@ -239,16 +285,19 @@ export class ListaCambiosPendientesComponent {
         'productoId': this.seleccionadas[0].productoId
       }
       this.api.procesarCambios(enviarProd).pipe(catchError(catchError((errors: HttpErrorResponse)=>{
-        console.log('Hubo un error en la conexión a internet o la base de datos.')
+        console.log(`Hubo un error en la conexión a internet o la base de datos. ID del producto: ${this.seleccionadas[0].productoId}. Volverá a intentarse hasta que se cargue correctamente.`)
         return throwError(errors);
     }))).subscribe((data)=>{
         console.log(data)
-        this.productos = this.productos + calculo
+        this.barraProgreso = this.barraProgreso + calculo
+        this.productos = this.barraProgreso.toFixed(2)
+        console.log('Porcentaje de carga: ' + this.productos)
         this.cambios = this.cambios + 1
         this.seleccionadas.shift()
         this.cargaProds()
     })
     } else {
+      console.log('<------ CAMBIOS FINALIZADOS ------>')
       this.messageService.add({ severity: 'info', summary:'Confirmado', detail: `¡Se actualizaron los datos! Guardaste ${this.cambios} cambios.` });
       this.cambios = 0
       this.loadingProductos = false;
@@ -256,10 +305,15 @@ export class ListaCambiosPendientesComponent {
     }
   }
   
+  //IR A CAMBIOS REALIZADOS
   irCambios(){
-    this.router.navigate(['cambiosrealizados'])
+    this.router.navigate(['actualizarEcommerce/cambiosrealizados'])
   }
 
+//----------------------------------------------------------------------------------------------------------------//
+//----------------------------------------------------------------------------------------------------------------//
+
+  //AFTER INIT
   ngAfterViewInit() {
     setTimeout(() => {
       this.componentLoading = false;
