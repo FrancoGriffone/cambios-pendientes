@@ -307,7 +307,7 @@ export class ListaCambiosPendientesComponent {
   
   //IR A CAMBIOS REALIZADOS
   irCambios(){
-    this.router.navigate(['actualizarEcommerce/cambiosrealizados'])
+    this.router.navigate(['/cambiosrealizados'])
   }
 
 //----------------------------------------------------------------------------------------------------------------//
